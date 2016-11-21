@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.tsinghua.arc.dao.PlanItemDao">
+
+    <insert id="addPlanItem" parameterType="PlanItem">
+        <selectKey keyProperty="id" resultType="Integer">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+        INSERT INTO `plan_item`
+        (plan_id,plan_date,status)
+        VALUES
+        (#{planId},#{planDate},#{status})
+    </insert>
+
+    <insert id="addEvidence" parameterType="PlanItemEvidence">
+        <selectKey keyProperty="id" resultType="Integer">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+        INSERT INTO `plan_item_evidence`
+        (plan_item_id,avatar,comment,created)
+        VALUES
+        (#{planItemId},#{avatar},#{comment},now());
+    </insert>
+
+    <update id="updateToFail" parameterType="Integer">
+        update `plan_item` set `status` = 3 where id=#{planItemId};
+    </update>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.tsinghua.arc.dao.JudgeDao">
+
+    <insert id="addJudgeResult" parameterType="PlanItemJudge">
+        <selectKey keyProperty="id" resultType="Integer">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+        INSERT INTO `plan_item_judge`
+        (plan_item_id,user_id,judge,comment,created)
+        VALUES
+        (#{planItemId},#{userId},#{judge},#{comment},now())
+    </insert>
+
+    <select id="countJudge" parameterType="Integer" resultType="Integer">
+        SELECT
+        count(1)
+        FROM `plan_item_judge`
+        WHERE plan_item_id=#{planItemId}
+        AND judge=1
+    </select>
+
+    <select id="checkIsAlreadyJudge" parameterType="PlanItemJudge" resultType="Integer">
+        SELECT count(1)
+        FROM `plan_item_judge`
+        WHERE plan_item_id=#{planItemId} and user_id = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.tsinghua.arc.dao.UserDao">
+
+    <insert id="addUser" parameterType="User">
+        <selectKey keyProperty="id" resultType="Integer">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+        INSERT INTO `user`
+        (user_name,password)
+        VALUES
+        (#{userName},#{password})
+    </insert>
+
+    <update id="updateImageUrl" parameterType="User">
+        UPDATE `user`
+        set avatar=#{avatar}
+        where id =#{id}
+    </update>
+
+    <select id="queryByNameAndPwd" parameterType="User" resultType="User">
+        SELECT
+        id as id,
+        user_name as userName,
+        password as password,
+        avatar as avatar
+        FROM `user`
+        WHERE user_name=#{userName} and password = #{password}
+    </select>
+
+    <update id="minusBalance">
+        UPDATE `user` set balance=balance-#{money} where id=#{userId}
+    </update>
+
+    <update id="increBalance">
+        update `user` set balance =balance+ #{money} where id in (SELECT user_id from plan_supervisor where plan_id=#{planId});
+    </update>
+
+</mapper>

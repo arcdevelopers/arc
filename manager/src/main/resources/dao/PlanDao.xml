@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.tsinghua.arc.dao.PlanDao">
+
+    <insert id="addPlan" parameterType="Plan">
+        <selectKey keyProperty="id" resultType="Integer">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+        INSERT INTO `plan`
+        (plan_name,start_time,end_time,money,status,description,user_id)
+        VALUES
+        (#{planName},#{startTime},#{endTime},#{money},#{status},#{description},#{userId});
+    </insert>
+
+    <select id="queryPlanList" parameterType="Plan" resultType="Plan">
+        SELECT
+        p.id as id,
+        p.plan_name as planName,
+        p.start_time as startTime,
+        p.end_time as endTime,
+        p.money as money,
+        p.status as status,
+        p.description as description,
+        p.user_id as userId,
+        u.user_name as userName,
+        u.avatar as userAvatar
+        from plan p
+        left join `user` u on u.id = p.user_id
+        order by id asc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="querySupervisorById" parameterType="Integer" resultType="User">
+        SELECT
+        u.id as id,
+        u.user_name as userName,
+        u.avatar as avatar
+        FROM plan_supervisor ps
+        LEFT JOIN `user` u on ps.user_id =u.id
+        WHERE ps.plan_id=#{planId}
+    </select>
+
+    <select id="queryPlanById" parameterType="Integer" resultType="Plan">
+        SELECT
+        p.id as id,
+        p.plan_name as planName,
+        p.start_time as startTime,
+        p.end_time as endTime,
+        p.money as money,
+        p.status as status,
+        p.description as description,
+        p.user_id as userId,
+        u.user_name as userName,
+        u.avatar as userAvatar
+        from plan p
+        left join `user` u on u.id = p.user_id
+        where p.id=#{planId}
+    </select>
+
+    <select id="queryPlanItemByPlanId" parameterType="Integer" resultType="PlanItem">
+        SELECT
+        id as id,
+        plan_id as planId,
+        plan_date as planDate,
+        status as status
+        from plan_item
+        where plan_id=#{planId}
+    </select>
+
+    <update id="updateToFail" parameterType="Integer">
+        update `plan` set `status` = 3 where id=(SELECT plan_id from `plan_item` where id=#{planItemId}) AND `status`=1;
+    </update>
+
+    <select id="queryPlanByItemId" parameterType="Integer" resultType="Plan">
+        SELECT
+        p.id as id,
+        p.plan_name as planName,
+        p.start_time as startTime,
+        p.end_time as endTime,
+        p.money as money,
+        p.status as status,
+        p.description as description,
+        p.user_id as userId
+        FROM `plan` p
+        WHERE p.id=(SELECT plan_id from `plan_item` where id=#{planItemId})
+    </select>
+</mapper>
