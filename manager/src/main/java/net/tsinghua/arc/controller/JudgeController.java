@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by ji on 16-11-19.
  */
 @Controller
-@RequestMapping("/judge/")
+@RequestMapping("/arc/judge/")
 public class JudgeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(JudgeController.class);
 

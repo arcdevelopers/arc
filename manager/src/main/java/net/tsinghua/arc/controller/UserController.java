@@ -26,7 +26,7 @@ import java.io.OutputStream;
  * Created by ji on 16-11-15.
  */
 @Controller
-@RequestMapping("/user/")
+@RequestMapping("/arc/user/")
 public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 

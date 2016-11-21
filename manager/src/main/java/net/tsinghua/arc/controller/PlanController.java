@@ -28,7 +28,7 @@ import java.util.List;
  * Created by ji on 16-11-16.
  */
 @Controller
-@RequestMapping("/plan/")
+@RequestMapping("/arc/plan/")
 public class PlanController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlanController.class);
 
