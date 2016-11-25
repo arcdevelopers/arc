@@ -240,8 +240,13 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <compilerArguments>
+                        <verbose />
+                        <bootclasspath>${env.JAVA_HOME}/jre/lib/rt.jar:${env.JAVA_HOME}/jre/lib/jce.jar</bootclasspath>
+                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

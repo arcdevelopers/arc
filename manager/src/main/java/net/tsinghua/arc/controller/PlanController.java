@@ -90,13 +90,13 @@ public class PlanController {
             }
 
             // insert plan
-            planService.addPlan(plan,sc,ec,today);
+            planService.addPlan(plan, sc, ec, today);
 
-        }catch (ParamException pe){
+        } catch (ParamException pe) {
             result.setCode(ResponseCodeConstants.PARAM_ERROR_CODE);
             result.setMessage(pe.getMessage());
             LOGGER.error("addPlan error", pe.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
             LOGGER.error("addPlan error", e);
         }
@@ -138,10 +138,16 @@ public class PlanController {
      */
     @ResponseBody
     @RequestMapping("getPlanList")
-    public JSONObject getPlanList(String message) {
+    public JSONObject getPlanList(@RequestParam(required = false) String message) {
+
         PageResult result = new PageResult();
         try {
-            Plan plan = (Plan) RequestUtil.toClassBean(message, Plan.class);
+            Plan plan;
+            if (message == null) {
+                plan = new Plan();
+            } else {
+                plan = (Plan) RequestUtil.toClassBean(message, Plan.class);
+            }
 
             List<Plan> planList = planService.queryPlanList(plan);
 
@@ -201,9 +207,10 @@ public class PlanController {
 
     /**
      * 上传证据
-     * @param planItemId  计划项id
-     * @param file        图片文件
-     * @param comment     描述，说明
+     *
+     * @param planItemId 计划项id
+     * @param file       图片文件
+     * @param comment    描述，说明
      * @return
      */
     @ResponseBody

@@ -40,7 +40,7 @@ public class PlanService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class, Throwable.class})
     public void addPlan(Plan plan, Calendar sc, Calendar ec, Calendar today) throws Exception {
 
-        userDao.minusBalance(plan.getUserId(), plan.getMoney());
+//        userDao.minusBalance(plan.getUserId(), plan.getMoney());
 
         planDao.addPlan(plan);
         while (sc.before(ec)) {

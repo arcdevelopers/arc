@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,17 +36,22 @@ public class UserController {
 
     /**
      * 注册
+     *
      * @param message
      * @return
      */
     @ResponseBody
     @RequestMapping("register")
-    public JSONObject addUser(String message) {
+    public JSONObject addUser(String message, MultipartFile file) {
         PageResult result = new PageResult();
         try {
             User user = (User) RequestUtil.toClassBean(message, User.class);
             userService.addUser(user);
 
+            String url = "/media/ji/document/school/arc/photo/" + user.getId() + ".jpeg";
+            ImageUtil.makeSmallImage(file.getInputStream(), url);
+            user.setAvatar(url);
+            userService.updateImageUrl(user);
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
         } catch (Exception e) {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
@@ -56,6 +62,7 @@ public class UserController {
 
     /**
      * 上传头像
+     *
      * @param userId
      * @param file
      * @return
@@ -83,6 +90,7 @@ public class UserController {
 
     /**
      * 登录
+     *
      * @param message
      * @return
      */
@@ -114,6 +122,7 @@ public class UserController {
 
     /**
      * 获取用户头像
+     *
      * @param url
      * @param response
      */
