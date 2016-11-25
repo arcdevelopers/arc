@@ -141,4 +141,21 @@ public class UserController {
             LOGGER.error("", e);
         }
     }
+
+    @ResponseBody
+    @RequestMapping("geBalance")
+    public JSONObject getBalance(Integer userId){
+        PageResult result = new PageResult();
+        try {
+            User user = userService.queryById(userId);
+            if (user != null) {
+                result.setObj(user);
+            }
+            result.setCode(ResponseCodeConstants.SUCCESS_CODE);
+        } catch (Exception e) {
+            result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
+            LOGGER.error("getBalance error", e);
+        }
+        return result.toJson();
+    }
 }

@@ -17,4 +17,6 @@ public interface UserDao {
     void minusBalance(@Param("userId") Integer userId, @Param("money") int money);
 
     void increBalance(@Param("planId") Integer planId, @Param("money") double money);
+
+    User queryById(Integer userId) throws Exception;
 }

@@ -22,8 +22,8 @@ import java.nio.charset.Charset;
  */
 public class HttpUtil {
     public static void main(String[] args) throws IOException {
-        String URL_STR = "http://127.0.0.1:8080/user/uploadPhoto";
-        URL_STR = "http://127.0.0.1:8080/plan/addEvidence";
+        String URL_STR = "http://127.0.0.1:8080/arc/user/register";
+        URL_STR = "http://127.0.0.1:8080/arc/plan/addEvidence";
         String filePath = "/home/ji/图片/background/idea.jpg";
 
         CloseableHttpClient httpClient = null;
@@ -41,14 +41,15 @@ public class HttpUtil {
 
         FileBody bin = new FileBody(new File(filePath));
 
-/*
+//
+//        JSONObject message = new JSONObject();
+//        message.put("userName", "ji");
+//        message.put("password", "123");
+//        StringBody data = new StringBody(message.toJSONString(), ContentType.create("text/plain", Consts.UTF_8));
+//        HttpEntity reqEntity = MultipartEntityBuilder.create()
+//                .addPart("message", data)
+//                .addPart("file", bin).build();
 
-        StringBody data = new StringBody("10", ContentType.create("text/plain", Consts.UTF_8));
-        HttpEntity reqEntity = MultipartEntityBuilder.create()
-                .addPart("userId", data)
-                .addPart("file", bin).build();
-
-*/
 
 
 
@@ -58,7 +59,6 @@ public class HttpUtil {
                 .addPart("planItemId", data)
                 .addPart("comment",comment)
                 .addPart("file", bin).build();
-
 
         httpPost.setEntity(reqEntity);
         CloseableHttpResponse response = httpClient.execute(httpPost);

@@ -26,4 +26,8 @@ public class UserService {
     public User queryByNameAndPwd(User user) throws Exception{
         return userDao.queryByNameAndPwd(user);
     }
+
+    public User queryById(Integer userId) throws Exception{
+        return userDao.queryById(userId);
+    }
 }

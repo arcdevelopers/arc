@@ -125,6 +125,7 @@ public class PlanController {
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
         } catch (Exception e) {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
+            result.setMessage(e.getMessage());
             LOGGER.error("join plan error", e);
         }
         return result.toJson();

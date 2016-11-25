@@ -21,4 +21,10 @@
           item.id = #{planItemId}
     </select>
 
+    <select id="checkIsJoin" parameterType="PlanSupervisor" resultType="Integer">
+        SELECT count(*)
+        FROM plan_supervisor
+        WHERE plan_id=#{planId} AND user_id=#{userId}
+    </select>
+
 </mapper>

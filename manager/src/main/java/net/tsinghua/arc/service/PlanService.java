@@ -61,7 +61,7 @@ public class PlanService {
         PlanItem planItem = new PlanItem();
         planItem.setPlanId(plan.getId());
         planItem.setPlanDate(itemTime.getTime());
-        if (itemTime.compareTo(today) >= 0) {
+        if (itemTime.compareTo(today) <= 0) {
             planItem.setStatus(PlanStatus.START);
         } else {
             planItem.setStatus(PlanStatus.WAIT);
@@ -74,6 +74,10 @@ public class PlanService {
      * 加入计划监督
      */
     public void joinPlan(PlanSupervisor planSupervisor) throws Exception {
+        int hasJoin = planSupervisorDao.checkIsJoin(planSupervisor);
+        if (hasJoin > 0) {
+            throw new RuntimeException("已经监督过改计划，不能重复监督");
+        }
         planSupervisorDao.joinPlan(planSupervisor);
     }
 

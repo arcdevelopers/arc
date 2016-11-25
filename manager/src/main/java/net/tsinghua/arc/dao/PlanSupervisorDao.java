@@ -10,4 +10,6 @@ public interface PlanSupervisorDao {
     void joinPlan(PlanSupervisor planSupervisor)throws Exception;
 
     int countSupervisor(Integer planItemId);
+
+    int checkIsJoin(PlanSupervisor planSupervisor) throws Exception;
 }
