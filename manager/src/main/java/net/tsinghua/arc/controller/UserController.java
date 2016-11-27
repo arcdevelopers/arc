@@ -3,25 +3,25 @@ package net.tsinghua.arc.controller;
 import com.alibaba.fastjson.JSONObject;
 import net.tsinghua.arc.domain.User;
 import net.tsinghua.arc.service.UserService;
+import net.tsinghua.arc.util.FSURLHandler;
 import net.tsinghua.arc.util.ImageUtil;
 import net.tsinghua.arc.util.PageResult;
 import net.tsinghua.arc.util.RequestUtil;
 import net.tsinghua.arc.web.ResponseCodeConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * Created by ji on 16-11-15.
@@ -48,9 +48,11 @@ public class UserController {
             User user = (User) RequestUtil.toClassBean(message, User.class);
             userService.addUser(user);
 
-            String url = "/media/ji/document/school/arc/photo/" + user.getId() + ".jpeg";
-            ImageUtil.makeSmallImage(file.getInputStream(), url);
-            user.setAvatar(url);
+            String fileName = user.getId() + ".jpeg";
+            String url = "/media/ji/document/school/arc/photo/" + fileName;
+            String hdfsUrl = FSURLHandler.PHOTO_HDFS_PATH + fileName;
+            ImageUtil.makeSmallImage(file.getInputStream(), url, hdfsUrl);
+            user.setAvatar(hdfsUrl);
             userService.updateImageUrl(user);
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
         } catch (Exception e) {
@@ -77,9 +79,11 @@ public class UserController {
             }
             User user = new User();
             user.setId(userId);
-            String url = "/media/ji/document/school/arc/photo/" + user.getId() + ".jpeg";
-            ImageUtil.makeSmallImage(file.getInputStream(), url);
-            user.setAvatar(url);
+            String fileName = user.getId() + ".jpeg";
+            String tmpUrl = "/media/ji/document/school/arc/photo/" + fileName;
+            String hdfsUrl = FSURLHandler.PHOTO_HDFS_PATH + fileName;
+            ImageUtil.makeSmallImage(file.getInputStream(), tmpUrl, hdfsUrl);
+            user.setAvatar(hdfsUrl);
             userService.updateImageUrl(user);
         } catch (Exception e) {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
@@ -130,21 +134,41 @@ public class UserController {
     public void getImage(String url, HttpServletResponse response) {
         try {
             response.setContentType("image/png");
+
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(url));
-            int i;
-            while ((i = in.read()) != -1) {
-                toClient.write(i);
+
+            //本地存储
+//            BufferedInputStream in = new BufferedInputStream(new FileInputStream(url));
+//            int i;
+//            while ((i = in.read()) != -1) {
+//                toClient.write(i);
+//            }
+
+            FileSystem fs = FileSystem.get(FSURLHandler.getConfiguration());
+            Path path = new Path(url);
+            InputStream inputStream = null;
+            ByteArrayOutputStream outputStream = null;
+            try {
+                inputStream = fs.open(path);
+                BufferedInputStream in = new BufferedInputStream(inputStream);
+                int i;
+                while ((i = in.read()) != -1) {
+                    toClient.write(i);
+                }
+                toClient.flush();
+            } finally {
+                IOUtils.closeStream(inputStream);
+                IOUtils.closeStream(outputStream);
+                fs.close();
             }
-            toClient.flush();
         } catch (Exception e) {
-            LOGGER.error("", e);
+            LOGGER.error("geImage error", e);
         }
     }
 
     @ResponseBody
     @RequestMapping("geBalance")
-    public JSONObject getBalance(Integer userId){
+    public JSONObject getBalance(Integer userId) {
         PageResult result = new PageResult();
         try {
             User user = userService.queryById(userId);

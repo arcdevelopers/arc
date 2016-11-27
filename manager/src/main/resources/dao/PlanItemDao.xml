@@ -26,4 +26,16 @@
     <update id="updateToFail" parameterType="Integer">
         update `plan_item` set `status` = 3 where id=#{planItemId};
     </update>
+
+    <select id="queryEvidenceByPlanItemId" resultType="PlanItemEvidence">
+        SELECT
+        id AS id,
+        plan_item_id AS planItemId,
+        avatar AS avatar,
+        comment AS comment,
+        created AS created
+        FROM plan_item_evidence
+        WHERE
+        plan_item_id=#{planItemId}
+    </select>
 </mapper>

@@ -100,4 +100,8 @@ public class PlanService {
     public void addEvidence(PlanItemEvidence evidence) throws Exception {
         planItemDao.addEvidence(evidence);
     }
+
+    public List<PlanItemEvidence> queryEvidenceByPlanItemId(Integer planItemId) throws Exception{
+        return planItemDao.queryEvidenceByPlanItemId(planItemId);
+    }
 }

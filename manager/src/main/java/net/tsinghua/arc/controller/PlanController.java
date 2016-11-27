@@ -246,4 +246,26 @@ public class PlanController {
         return result.toJson();
     }
 
+    @ResponseBody
+    @RequestMapping("getEvidence")
+    public JSONObject getEvidence(String message){
+        PageResult result = new PageResult();
+        try {
+            PlanItemEvidence planItemEvidence = (PlanItemEvidence) RequestUtil.toClassBean(message, PlanItemEvidence.class);
+            if (planItemEvidence.getPlanItemId() == null) {
+                throw new ParamException("planItemId不能为空");
+            }
+            List<PlanItemEvidence> evidenceList = planService.queryEvidenceByPlanItemId(planItemEvidence.getPlanItemId());
+            result.setCode(ResponseCodeConstants.SUCCESS_CODE);
+            result.setList(evidenceList);
+        } catch (ParamException pe){
+            result.setCode(ResponseCodeConstants.PARAM_ERROR_CODE);
+            LOGGER.error("getEvidence error", pe);
+        }catch (Exception e) {
+            result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
+            LOGGER.error("getEvidence error", e);
+        }
+        return result.toJson();
+    }
+
 }

@@ -13,7 +13,7 @@ import java.io.InputStream;
  * Created by ji on 16-11-16.
  */
 public class ImageUtil {
-    public static void makeSmallImage(InputStream srcImageFile, String dstImageFileName) throws Exception {
+    public static void makeSmallImage(InputStream srcImageFile, String dstImageFileName, String hdfsUrl) throws Exception {
         FileOutputStream fileOutputStream = null;
         JPEGImageEncoder encoder = null;
         BufferedImage tagImage = null;
@@ -58,5 +58,6 @@ public class ImageUtil {
             tagImage = null;
             srcImage = null;
         }
+        FSURLHandler.copyFromLocalFile(FSURLHandler.getConfiguration(), dstImageFileName, hdfsUrl);
     }
 }
