@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import net.tsinghua.arc.domain.*;
 import net.tsinghua.arc.enums.PlanStatus;
 import net.tsinghua.arc.exception.ParamException;
+import net.tsinghua.arc.service.JudgeService;
 import net.tsinghua.arc.service.PlanService;
 import net.tsinghua.arc.util.PageResult;
 import net.tsinghua.arc.util.RequestUtil;
@@ -35,6 +36,9 @@ public class PlanController {
 
     @Autowired
     private PlanService planService;
+
+    @Autowired
+    private JudgeService judgeService;
 
     /**
      * 增加计划
@@ -196,6 +200,12 @@ public class PlanController {
                 List<User> users = planService.querySupervisorById(planId);
                 plan.setSupervisors(users);
                 List<PlanItem> planItemList = planService.queryPlanItemByPlanId(planId);
+                if (planItemList != null && planItemList.size() > 0) {
+                    for (PlanItem pl : planItemList) {
+                        List<UserJudgeResult> planItemJudges = judgeService.queryItemJudge(planId, pl.getId());
+                        pl.setJudges(planItemJudges);
+                    }
+                }
                 result.setList(planItemList);
             }
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
@@ -248,7 +258,7 @@ public class PlanController {
 
     @ResponseBody
     @RequestMapping("getEvidence")
-    public JSONObject getEvidence(String message){
+    public JSONObject getEvidence(String message) {
         PageResult result = new PageResult();
         try {
             PlanItemEvidence planItemEvidence = (PlanItemEvidence) RequestUtil.toClassBean(message, PlanItemEvidence.class);
@@ -258,10 +268,10 @@ public class PlanController {
             List<PlanItemEvidence> evidenceList = planService.queryEvidenceByPlanItemId(planItemEvidence.getPlanItemId());
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
             result.setList(evidenceList);
-        } catch (ParamException pe){
+        } catch (ParamException pe) {
             result.setCode(ResponseCodeConstants.PARAM_ERROR_CODE);
             LOGGER.error("getEvidence error", pe);
-        }catch (Exception e) {
+        } catch (Exception e) {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
             LOGGER.error("getEvidence error", e);
         }

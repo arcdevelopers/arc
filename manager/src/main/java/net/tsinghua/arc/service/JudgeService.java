@@ -4,12 +4,14 @@ import net.tsinghua.arc.dao.*;
 import net.tsinghua.arc.domain.Plan;
 import net.tsinghua.arc.domain.PlanItemJudge;
 import net.tsinghua.arc.domain.User;
+import net.tsinghua.arc.domain.UserJudgeResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * Created by ji on 16-11-19.
@@ -60,5 +62,9 @@ public class JudgeService {
 
     public int checkIsAlreadyJudge(PlanItemJudge judge) throws Exception {
         return judgeDao.checkIsAlreadyJudge(judge);
+    }
+
+    public List<UserJudgeResult> queryItemJudge(Integer planId, Integer planItemId) throws Exception {
+        return judgeDao.queryItemJudge(planId, planItemId);
     }
 }

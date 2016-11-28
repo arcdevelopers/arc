@@ -1,6 +1,7 @@
 package net.tsinghua.arc.domain;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ji on 16-11-16.
@@ -14,6 +15,9 @@ public class PlanItem {
     private Date planDate;
 
     private Integer status;
+
+
+    private List<UserJudgeResult> judges;
 
     public Integer getId() {
         return id;
@@ -45,5 +49,13 @@ public class PlanItem {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public List<UserJudgeResult> getJudges() {
+        return judges;
+    }
+
+    public void setJudges(List<UserJudgeResult> judges) {
+        this.judges = judges;
     }
 }

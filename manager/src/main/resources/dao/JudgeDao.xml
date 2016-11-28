@@ -26,4 +26,24 @@
         FROM `plan_item_judge`
         WHERE plan_item_id=#{planItemId} and user_id = #{userId}
     </select>
+
+    <select id="queryItemJudge" resultType="UserJudgeResult">
+        select
+            pr.userId, pr.userName, pr.avatar, pj.judge
+        from
+            (select
+                u.id AS userId, u.user_name AS userName, u.avatar AS avatar
+            from
+                plan_supervisor p
+            LEFT JOIN user u ON p.user_id = u.id
+            where
+                plan_id = #{planId}) pr
+                left join
+            (select
+                judge, user_id
+            from
+                plan_item_judge
+            where
+                plan_item_id = #{planItemId}) pj ON pr.userId = pj.user_id
+    </select>
 </mapper>
