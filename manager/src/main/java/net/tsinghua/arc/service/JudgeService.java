@@ -40,6 +40,9 @@ public class JudgeService {
 
         judgeDao.addJudgeResult(judge);
 
+        if (judge.getJudge().intValue() == 0) {
+            return;
+        }
         int supervisorCount = supervisorDao.countSupervisor(judge.getPlanItemId());
         int argueCount = judgeDao.countJudge(judge.getPlanItemId());
 
