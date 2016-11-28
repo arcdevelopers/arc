@@ -13,12 +13,12 @@
         (#{planItemId},#{userId},#{judge},#{comment},now())
     </insert>
 
-    <select id="countJudge" parameterType="Integer" resultType="Integer">
+    <select id="countJudge" resultType="Integer">
         SELECT
         count(1)
         FROM `plan_item_judge`
         WHERE plan_item_id=#{planItemId}
-        AND judge=1
+        AND judge=#{judge}
     </select>
 
     <select id="checkIsAlreadyJudge" parameterType="PlanItemJudge" resultType="Integer">
@@ -29,7 +29,7 @@
 
     <select id="queryItemJudge" resultType="UserJudgeResult">
         select
-            pr.userId, pr.userName, pr.avatar, pj.judge
+            pr.userId, pr.userName, pr.avatar, pj.judge,pj.comment
         from
             (select
                 u.id AS userId, u.user_name AS userName, u.avatar AS avatar
@@ -40,7 +40,7 @@
                 plan_id = #{planId}) pr
                 left join
             (select
-                judge, user_id
+                judge, user_id,comment
             from
                 plan_item_judge
             where

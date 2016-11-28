@@ -7,6 +7,7 @@ import net.tsinghua.arc.enums.PlanStatus;
 import net.tsinghua.arc.exception.ParamException;
 import net.tsinghua.arc.service.JudgeService;
 import net.tsinghua.arc.service.PlanService;
+import net.tsinghua.arc.util.FSURLHandler;
 import net.tsinghua.arc.util.PageResult;
 import net.tsinghua.arc.util.RequestUtil;
 import net.tsinghua.arc.web.ResponseCodeConstants;
@@ -233,8 +234,9 @@ public class PlanController {
                 throw new RuntimeException("planItemId can not be null");
             }
 
+            String tmpPath = planItemId + "_" + System.currentTimeMillis();
             String name = file.getOriginalFilename();
-            String url = "/media/ji/document/school/arc/evidence/" + planItemId + "_" + System.currentTimeMillis();
+            String url = "/media/ji/document/school/arc/evidence/" + tmpPath;
             File dir = new File(url);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -242,8 +244,13 @@ public class PlanController {
             String filePath = url + "/" + name;
             file.transferTo(new File(filePath));
 
+            String hdfsDir = "/data/arc/evidence/" + tmpPath;
+            String hdfsUrl = hdfsDir + "/" + name;
+
+            FSURLHandler.copyFromLocalFile(FSURLHandler.getConfiguration(), filePath, hdfsUrl);
+
             PlanItemEvidence evidence = new PlanItemEvidence();
-            evidence.setAvatar(filePath);
+            evidence.setAvatar(hdfsUrl);
             evidence.setComment(comment);
             evidence.setPlanItemId(planItemId);
 

@@ -2,6 +2,7 @@ package net.tsinghua.arc.dao;
 
 import net.tsinghua.arc.domain.PlanItem;
 import net.tsinghua.arc.domain.PlanItemEvidence;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PlanItemDao {
 
     void addEvidence(PlanItemEvidence evidence) throws Exception;
 
-    void updateToFail(Integer planItemId);
+    void updateStatus(@Param("planItemId") Integer planItemId,@Param("status") Integer status);
 
     List<PlanItemEvidence> queryEvidenceByPlanItemId(Integer planItemId) throws Exception;
 }

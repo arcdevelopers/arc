@@ -13,7 +13,7 @@ public interface JudgeDao {
 
     void addJudgeResult(PlanItemJudge judge) throws Exception;
 
-    int countJudge(Integer planItemId) throws Exception;
+    int countJudge(@Param("planItemId") Integer planItemId,@Param("judge") Integer judge) throws Exception;
 
     int checkIsAlreadyJudge(PlanItemJudge judge) throws Exception;
 

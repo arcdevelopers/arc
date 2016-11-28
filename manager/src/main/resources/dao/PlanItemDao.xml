@@ -23,8 +23,8 @@
         (#{planItemId},#{avatar},#{comment},now());
     </insert>
 
-    <update id="updateToFail" parameterType="Integer">
-        update `plan_item` set `status` = 3 where id=#{planItemId};
+    <update id="updateStatus">
+        update `plan_item` set `status` = #{status} where id=#{planItemId};
     </update>
 
     <select id="queryEvidenceByPlanItemId" resultType="PlanItemEvidence">

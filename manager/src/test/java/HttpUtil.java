@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
 public class HttpUtil {
     public static void main(String[] args) throws IOException {
         String URL_STR = "http://127.0.0.1:8081/arc/user/register";
-//        URL_STR = "http://127.0.0.1:8080/arc/plan/addEvidence";
+        URL_STR = "http://127.0.0.1:8080/arc/plan/addEvidence";
         String filePath = "/home/ji/图片/background/idea.jpg";
 
         CloseableHttpClient httpClient = null;
@@ -41,24 +41,24 @@ public class HttpUtil {
 
         FileBody bin = new FileBody(new File(filePath));
 
-
-        JSONObject message = new JSONObject();
-        message.put("userName", "jgt");
-        message.put("password", "123");
-        StringBody data = new StringBody(message.toJSONString(), ContentType.create("text/plain", Consts.UTF_8));
-        HttpEntity reqEntity = MultipartEntityBuilder.create()
-                .addPart("message", data)
-                .addPart("file", bin).build();
-
-
-
-
-//        StringBody data = new StringBody("1", ContentType.create("text/plain", Consts.UTF_8));
-//        StringBody comment = new StringBody("测试评论", ContentType.create("text/plain", Consts.UTF_8));
+//
+//        JSONObject message = new JSONObject();
+//        message.put("userName", "jgt");
+//        message.put("password", "123");
+//        StringBody data = new StringBody(message.toJSONString(), ContentType.create("text/plain", Consts.UTF_8));
 //        HttpEntity reqEntity = MultipartEntityBuilder.create()
-//                .addPart("planItemId", data)
-//                .addPart("comment",comment)
+//                .addPart("message", data)
 //                .addPart("file", bin).build();
+
+
+
+
+        StringBody data = new StringBody("1", ContentType.create("text/plain", Consts.UTF_8));
+        StringBody comment = new StringBody("测试评论", ContentType.create("text/plain", Consts.UTF_8));
+        HttpEntity reqEntity = MultipartEntityBuilder.create()
+                .addPart("planItemId", data)
+                .addPart("comment",comment)
+                .addPart("file", bin).build();
 
         httpPost.setEntity(reqEntity);
         CloseableHttpResponse response = httpClient.execute(httpPost);

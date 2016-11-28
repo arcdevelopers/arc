@@ -87,4 +87,35 @@
         FROM `plan` p
         WHERE p.id=(SELECT plan_id from `plan_item` where id=#{planItemId})
     </select>
+
+    <update id="completePlanItem">
+        UPDATE
+        plan_item
+        SET
+        `status`=2
+        WHERE
+        `status`='1' AND
+        <![CDATA[ DATE_FORMAT(plan_date,'%Y-%m-%d') = #{timeStr}
+        ]]>
+    </update>
+
+    <select id="queryPlanTobeComplete" resultType="Integer">
+        SELECT id FROM
+        plan p
+        where NOT EXISTS (
+        SELECT id FROM plan_item item
+        where item.plan_id=p.id AND item.`status` IN('0','1')
+        )
+    </select>
+
+    <update id="completePlan" parameterType="List">
+        UPDATE
+        plan
+        set `status`='2'
+        WHERE
+        id IN
+        <foreach collection="planIdList" index="index" open="(" close=")" item="planId" separator=",">
+            #{planId}
+        </foreach>
+    </update>
 </mapper>

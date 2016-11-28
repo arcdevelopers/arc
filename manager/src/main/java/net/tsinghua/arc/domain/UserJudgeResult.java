@@ -13,6 +13,8 @@ public class UserJudgeResult {
 
     private Integer judge;
 
+    private String comment;
+
     public Integer getUserId() {
         return userId;
     }
@@ -43,5 +45,13 @@ public class UserJudgeResult {
 
     public void setJudge(Integer judge) {
         this.judge = judge;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

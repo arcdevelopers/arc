@@ -3,6 +3,7 @@ package net.tsinghua.arc.dao;
 import net.tsinghua.arc.domain.Plan;
 import net.tsinghua.arc.domain.PlanItem;
 import net.tsinghua.arc.domain.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,10 @@ public interface PlanDao {
     int updateToFail(Integer planItemId);
 
     Plan queryPlanByItemId(Integer planItemId);
+
+    void completePlanItem(String timeStr);
+
+    List<Integer> queryPlanTobeComplete();
+
+    void completePlan(@Param("planIdList") List<Integer> planIdList);
 }

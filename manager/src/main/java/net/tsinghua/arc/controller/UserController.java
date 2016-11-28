@@ -156,6 +156,14 @@ public class UserController {
                     toClient.write(i);
                 }
                 toClient.flush();
+            } catch (Exception e) {
+                inputStream = fs.open(new Path("/data/arc/photo/default.jpg"));
+                BufferedInputStream in = new BufferedInputStream(inputStream);
+                int i;
+                while ((i = in.read()) != -1) {
+                    toClient.write(i);
+                }
+                toClient.flush();
             } finally {
                 IOUtils.closeStream(inputStream);
                 IOUtils.closeStream(outputStream);
