@@ -133,6 +133,7 @@ public class UserController {
     @RequestMapping("getImage")
     public void getImage(String url, HttpServletResponse response) {
         try {
+            LOGGER.error("url:{}", url);
             response.setContentType("image/png");
 
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
@@ -170,7 +171,7 @@ public class UserController {
                 fs.close();
             }
         } catch (Exception e) {
-            LOGGER.error("geImage error", e);
+            LOGGER.error("geImage error,{}", url, e);
         }
     }
 

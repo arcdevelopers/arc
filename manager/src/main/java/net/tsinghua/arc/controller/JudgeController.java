@@ -48,9 +48,9 @@ public class JudgeController {
         } catch (ParamException pa){
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
             result.setMessage(pa.getMessage());
-            LOGGER.error("judge error,{}", pa.getMessage());
+            LOGGER.error("judge error,{}", message,pa.getMessage());
         }catch (ArcException ae){
-            result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
+            result.setCode(ResponseCodeConstants.DUPLICATE_ERROR_CODE);
             result.setMessage(ae.getMessage()   );
             LOGGER.error("judge error,{}", ae.getMessage());
         }catch (Exception e) {

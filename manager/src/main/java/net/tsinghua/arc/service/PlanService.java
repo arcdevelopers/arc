@@ -98,10 +98,17 @@ public class PlanService {
     }
 
     public void addEvidence(PlanItemEvidence evidence) throws Exception {
+        if (evidence.getComment() == null) {
+            evidence.setComment("");
+        }
         planItemDao.addEvidence(evidence);
     }
 
     public List<PlanItemEvidence> queryEvidenceByPlanItemId(Integer planItemId) throws Exception{
         return planItemDao.queryEvidenceByPlanItemId(planItemId);
+    }
+
+    public PlanItem queryPlanItemById(Integer planItemId) throws Exception{
+        return planItemDao.queryPlanItemById(planItemId);
     }
 }

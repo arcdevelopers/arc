@@ -117,6 +117,7 @@ public class PlanController {
     @ResponseBody
     @RequestMapping("joinPlan")
     public JSONObject joinPlan(String message) {
+        LOGGER.error("request message:{}", message);
         PageResult result = new PageResult();
         try {
             PlanSupervisor planSupervisor = (PlanSupervisor) RequestUtil.toClassBean(message, PlanSupervisor.class);
@@ -220,16 +221,18 @@ public class PlanController {
     /**
      * 上传证据
      *
-     * @param planItemId 计划项id
-     * @param file       图片文件
-     * @param comment    描述，说明
+     * @param message 计划项id
+     * @param file    图片文件
+     * @param comment 描述，说明
      * @return
      */
     @ResponseBody
     @RequestMapping("addEvidence")
-    public JSONObject addEvidence(Integer planItemId, MultipartFile file, @RequestParam(value = "comment", required = false) String comment) {
+    public JSONObject addEvidence(String message, MultipartFile file, @RequestParam(value = "comment", required = false) String comment) {
         PageResult result = new PageResult();
         try {
+            JSONObject obj = JSON.parseObject(message);
+            Integer planItemId = obj.getInteger("planItemId");
             if (planItemId == null) {
                 throw new RuntimeException("planItemId can not be null");
             }
@@ -272,9 +275,25 @@ public class PlanController {
             if (planItemEvidence.getPlanItemId() == null) {
                 throw new ParamException("planItemId不能为空");
             }
+
+            PlanItem planItem = planService.queryPlanItemById(planItemEvidence.getPlanItemId());
             List<PlanItemEvidence> evidenceList = planService.queryEvidenceByPlanItemId(planItemEvidence.getPlanItemId());
+
+            List<UserJudgeResult> planItemJudges = judgeService.queryItemJudge(planItem.getPlanId(), planItemEvidence.getPlanItemId());
+
+            List<UserJudgeResult> reject = new ArrayList<>();
+            if (planItemJudges != null) {
+                for (UserJudgeResult tmpResult : planItemJudges) {
+                    if (tmpResult.getJudge() != null && tmpResult.getJudge().intValue() == 1) {
+                        reject.add(tmpResult);
+                    }
+                }
+            }
+            result.setList(reject);
             result.setCode(ResponseCodeConstants.SUCCESS_CODE);
-            result.setList(evidenceList);
+            if (evidenceList.size() > 0) {
+                result.setObj(evidenceList.get(evidenceList.size() - 1));
+            }
         } catch (ParamException pe) {
             result.setCode(ResponseCodeConstants.PARAM_ERROR_CODE);
             LOGGER.error("getEvidence error", pe);
@@ -282,6 +301,7 @@ public class PlanController {
             result.setCode(ResponseCodeConstants.SYS_ERROR_CODE);
             LOGGER.error("getEvidence error", e);
         }
+        System.out.println(result.toJson());
         return result.toJson();
     }
 

@@ -18,4 +18,6 @@ public interface PlanItemDao {
     void updateStatus(@Param("planItemId") Integer planItemId,@Param("status") Integer status);
 
     List<PlanItemEvidence> queryEvidenceByPlanItemId(Integer planItemId) throws Exception;
+
+    PlanItem queryPlanItemById(Integer planItemId) throws Exception;
 }

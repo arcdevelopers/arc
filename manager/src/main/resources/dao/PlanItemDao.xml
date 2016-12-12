@@ -38,4 +38,13 @@
         WHERE
         plan_item_id=#{planItemId}
     </select>
+
+    <select id="queryPlanItemById" parameterType="Integer" resultType="PlanItem">
+        SELECT
+        id AS  id,
+        plan_id as planId
+        FROM `plan_item`
+        WHERE
+        id=#{planItemId}
+    </select>
 </mapper>
